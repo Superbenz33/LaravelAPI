@@ -45,6 +45,7 @@ route::post('login', function () {
         $user->tokens()->delete();
 
         // if logged set token ability = Superadmin
+        // $_Token = $user->createToken('external_user', ['Superadmin']);
         $_Token = $user->createToken('external_user', ['User']);
         
         // Return Token to user

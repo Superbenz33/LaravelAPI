@@ -10,7 +10,10 @@ use App\User;
 |--------------------------------------------------------------------------
 | Create by : Superbenz33
 | Service Tools : Postman
-| 
+| Run : cmd - php artisan serve 
+| Login : localhost:8000/api/login ( email / password )
+| Get Data : localhost:8000/api/numbers ( header token from login )
+|
 | Here is where you can register API routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
@@ -41,8 +44,8 @@ route::post('login', function () {
         $user = User::where('email', $credentail['email'])->first();
         $user->tokens()->delete();
 
-        // Check token ability (Permission)
-        $_Token = $user->createToken('external_user', ['Superadmin']);
+        // if logged set token ability = Superadmin
+        $_Token = $user->createToken('external_user', ['User']);
         
         // Return Token to user
         return response()->json(['token' => $_Token->plainTextToken]);
@@ -57,7 +60,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
         // Check User Permission
         if ($user->tokenCan('Superadmin')) {
-            return response()->json([1, 2, 3, 4, 5]);
+            return response()->json(['One', 'Two', 'Three', 'Four', 'Five']);
+        } elseif($user->tokenCan('User')) { // Data for User Only
+            return response()->json(['A', 'B', 'C', 'D', 'E']);
         } else {
             abort(403);
         }
